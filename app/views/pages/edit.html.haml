@@ -1,0 +1,11 @@
+- title "Editing #{@page.name.titleize}"
+
+%h1= title
+
+= form :method => 'put', :action => slice_url(:page, @page) do
+  %p
+    = text_area @page.content, :name => :content
+  %p
+    = submit'Save as the newest version'
+    or
+    = link_to 'cancel', slice_url(:page, @page), :class => 'cancel'

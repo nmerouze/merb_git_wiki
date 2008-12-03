@@ -1,0 +1,11 @@
+- title @page.name.titleize
+
+:javascript
+  $(document).ready(function() {
+    $.hotkeys.add('Ctrl+e', function() { document.location = '#{slice_url(:edit_page, @page)}' })
+  })
+
+%h1#page_title= title
+
+#page_content
+  ~ "#{@page.to_html}"

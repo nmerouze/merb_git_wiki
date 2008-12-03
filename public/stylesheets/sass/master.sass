@@ -1,0 +1,91 @@
+body
+  :font
+    family: "Lucida Grande", Verdana, Arial, Bitstream Vera Sans, Helvetica, sans-serif
+    size: 14px
+    color: black
+  line-height: 160%
+  background-color: white
+  margin: 0 10px
+  padding: 0
+h1#page_title
+  font-size: xx-large
+  text-align: center
+  padding: .9em
+h1
+  font-size: x-large
+h2
+  font-size: large
+h3
+  font-size: medium
+a
+  padding: 2px
+  color: blue
+  &.exists
+    &:hover
+      background-color: blue
+      text-decoration: none
+      color: white
+  &.unknown
+    color: gray
+    &:hover
+      background-color: gray
+      color: white
+      text-decoration: none
+  &.cancel
+    color: red
+    &:hover
+      text-decoration: none
+      background-color: red
+      color: white
+blockquote
+  background-color: #f9f9f9
+  padding: 5px 5px
+  margin: 0
+  margin-bottom: 2em
+  outline: #eee solid 1px
+  font-size: 0.9em
+  cite
+    font-weight: bold
+    padding-left: 2em
+code
+  background-color: #eee
+  font-size: smaller
+pre
+  padding: 5px 5px
+  overflow: auto
+  font-family: fixed
+  line-height: 1em
+  border-right: 1px solid #ccc
+  border-bottom: 1px solid #ccc
+  background-color: #eee
+textarea
+  font-family: courrier
+  font-size: .9em
+  border: 2px solid #ccc
+  display: block
+  padding: .5em
+  height: 37em
+  width: 100%
+  line-height: 18px
+input.submit
+  font-weight: bold
+
+#content
+  max-width: 48em
+  margin: auto
+  padding: 2em
+ul#pages_list
+  list-style-type: none
+  margin: 0
+  padding: 0
+  li
+    padding: 5px
+    &.odd
+      background-color: #D3D3D3
+    a
+      text-decoration: none
+.highlight
+  background-color: #f8ec11
+.done
+  font-size: x-small
+  color: #999

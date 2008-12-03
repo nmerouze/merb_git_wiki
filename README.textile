@@ -1,0 +1,7 @@
+# Edit lib/merb_git_wiki.rb and change value of GitRepository
+# sudo rake install
+# merb-gen app myapp
+# cd myapp
+# rake slices:merb_git_wiki:install
+
+NB: You application must using HAML.
