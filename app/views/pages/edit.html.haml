@@ -6,7 +6,7 @@
   %p
     = text_area @page.body, :name => :body
   %p
-    = text_field :value => URI.decode(params[:message]) || '', :name => :message
+    = text_field :value => URI.decode(params[:message] || ''), :name => :message
   %p
     = submit 'Save as the newest version'
     or
