@@ -36,9 +36,9 @@ Merb::Config.use do |c|
 end
  
 Merb::BootLoader.before_app_loads do
-  require 'lib/core_ext'
+  require Merb.root / 'lib' / 'core_ext'
   
-  GitRepository = Merb.root / 'repo'
+  GitRepository = Merb.root / 'wiki'
   PageExtension = '.textile'
   Homepage = 'Home'
 end

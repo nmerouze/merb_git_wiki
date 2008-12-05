@@ -1,6 +1,6 @@
 if defined?(Merb::Plugins)
   
-  GitRepository = Merb.root / 'repo'
+  GitRepository = Merb.root / 'wiki'
   PageExtension = '.textile'
   Homepage = 'Home'
 
@@ -26,7 +26,7 @@ if defined?(Merb::Plugins)
     
     # Slice metadata
     self.description = "MerbGitWiki is a git-wiki powered by Merb and in a slice form."
-    self.version = "0.1.0"
+    self.version = "0.1.1"
     self.author = "Nicolas Mérouze"
     
     # Stub classes loaded hook - runs before LoadClasses BootLoader
@@ -39,6 +39,10 @@ if defined?(Merb::Plugins)
       begin
         Page.repo = Grit::Repo.new(GitRepository)
       rescue Grit::InvalidGitRepositoryError, Grit::NoSuchPathError
+        FileUtils.mkdir_p(GitRepository) unless File.directory?(GitRepository)
+        Dir.chdir(GitRepository) { `git init` }
+        Page.repo = Grit::Repo.new(GitRepository)
+      rescue
         Merb.logger.error "#{GitRepository}: Not a git repository."
       end
     end
@@ -61,7 +65,7 @@ if defined?(Merb::Plugins)
     # @note prefix your named routes with :merb_git_wiki_
     #   to avoid potential conflicts with global named routes.
     def self.setup_router(scope)
-      scope.resources :pages
+      scope.resources :pages, :member => { :history => :get }
       scope.match('/').to(:controller => 'pages', :action => 'index')
     end
     

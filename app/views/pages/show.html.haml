@@ -1,11 +1,13 @@
-- title @page.name.titleize
-
-:javascript
-  $(document).ready(function() {
-    $.hotkeys.add('Ctrl+e', function() { document.location = '#{slice_url(:edit_page, @page)}' })
-  })
-
-%h1#page_title= title
+- if @page.latest?
+  - title @page.name.titleize
+  = actions_for(@page)
+- else
+  - title "Version #{@page.revision.id_abbrev} of #{@page.name}"
+  Version 
+  = link_to_page_with_revision(@page)
+  = surround ' of ', ' &mdash; ' do
+    = link_to_page(@page)
+  = revert_link_for(@page)
 
 #page_content
   ~ "#{@page.to_html}"

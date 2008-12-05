@@ -1,8 +1,9 @@
-class PageNotFound < Merb::ControllerExceptions::NotFound 
-  attr_reader :name
+class PageNotFound < Merb::ControllerExceptions::NotFound
+  attr_reader :name, :revision
 
-  def initialize(name)
+  def initialize(name, revision)
     @name = name
+    @revision = revision
   end
 end
 
@@ -15,10 +16,10 @@ class Page
       repo.tree.contents.collect { |blob| new(blob) }
     end
 
-    def find(name)
-      page_blob = find_blob(name)
-      raise PageNotFound.new(name) unless page_blob
-      new(page_blob)
+    def find(name, revision='HEAD')
+      blob = find_blob(name, revision)
+      raise PageNotFound.new(name, revision) unless blob
+      new(blob)
     end
 
     def find_or_create(name)
@@ -35,12 +36,12 @@ class Page
     end
 
     private
-      def find_blob(page_name)
-        repo.tree/(page_name + PageExtension)
-      end
-
       def create_blob_for(page_name)
         Grit::Blob.create(repo, :name => page_name + PageExtension, :data => '')
+      end
+
+      def find_blob(name, treeish='HEAD')
+        repo.tree(treeish)/(name + PageExtension)
       end
   end
 
@@ -49,7 +50,7 @@ class Page
   end
 
   def to_html
-    content.auto_link.wiki_link.to_html
+    body.linkify.to_html
   end
 
   def to_s
@@ -60,31 +61,54 @@ class Page
     @blob.id.nil?
   end
 
-  def name
-    @blob.name.without_ext
+  def latest?
+    (revisions.first.tree/@blob.name).id == @blob.id
   end
 
-  def content
+  def name
+    @name ||= @blob.name.without_ext
+  end
+
+  def body
     @blob.data
   end
 
-  def update_content(new_content)
-    return if new_content == content
-    File.open(file_name, 'w') { |f| f << new_content }
-    add_to_index_and_commit!
+  def revisions
+    @revisions ||= begin
+      return [] if new?
+      Page.repo.log('master', @blob.name)
+    end
+  end
+
+  def revision
+    # TODO: WTF!!!??
+    @revision ||= begin
+      revisions.select do |commit|
+        commit.tree(commit, @blob.name).contents.detect do |blob|
+          blob.id == @blob.id
+        end
+      end.last
+    end
+  end
+
+  def update!(content, message='')
+    return if content == body
+    File.open(file_name, 'w') { |f| f << content }
+    add_to_index_and_commit!(message)
   end
 
   private
-    def add_to_index_and_commit!
+    def add_to_index_and_commit!(custom_commit_message='')
       Dir.chdir(GitRepository) { Page.repo.add(@blob.name) }
-      Page.repo.commit_index(commit_message)
+      Page.repo.commit_index(commit_message(custom_commit_message))
     end
 
     def file_name
       File.join(GitRepository, name + PageExtension)
     end
 
-    def commit_message
-      new? ? "Created #{name}" : "Updated #{name}"
+    def commit_message(message = '')
+      return message unless message.empty?
+      new? ? "Created #{name}" : "Edited #{name}"
     end
 end

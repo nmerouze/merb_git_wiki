@@ -1,3 +1,5 @@
+require 'open-uri'
+
 module Merb
   module MerbGitWiki
     module ApplicationHelper
@@ -66,6 +68,45 @@ module Merb
 
       def list_item(page)
         link_to page.name.titleize, slice_url(:page, page), :class => 'page_name'
+      end
+      
+      def link_to_page(page, with_revision=false)
+        if with_revision
+          attrs = {:class => 'page_revision', :href => slice_url(:page, page, :revision => page.revision.id)}
+          text = page.revision.id_abbrev
+        end
+
+        haml_tag(:a, attrs || { :href => slice_url(:page, page), :class => 'page' }) do
+          haml_concat text || page.name.titleize
+        end
+      end
+      
+      def revert_link_for(page)
+        message = URI.encode "Revert to #{page.revision}"
+        link_to 'Revert', slice_url(:edit_page, page, :body => URI.encode(page.body), :message => message)
+      end
+      
+      def link_to_page_with_revision(page)
+        link_to_page(page, true)
+      end
+      
+      def history_item(page)
+        precede(time_lost_in_words(page.revision.date) + ' ago &mdash; ') do
+          link_to_page_with_revision(page)
+          haml_tag(:span, :class => 'commit_message') do
+            haml_concat page.revision.short_message
+          end
+        end
+      end
+      
+      def actions_for(page)
+        capture_haml(page) do |p|
+          link_to_page(p)
+          haml_concat ' &mdash; '
+          haml_concat link_to('Edit', slice_url(:edit_page, p))
+          haml_concat '/'
+          haml_concat link_to('History', slice_url(:history_page, p))
+        end
       end
       
     end

@@ -1,0 +1,5 @@
+- title "History of #{@page}"
+%h1= "History #{link_to_page(@page)}"
+%ul#revisions
+  - @revisions.each do |revision|
+    %li= history_item(revision)

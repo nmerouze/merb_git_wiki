@@ -1,6 +1,12 @@
+Installation:
+
 # Edit lib/merb_git_wiki.rb and change value of GitRepository
 # sudo rake install
 # merb-gen app myapp
 # cd myapp
 # Configure it for HAML.
 # rake slices:merb_git_wiki:install
+
+Customisation:
+
+* To deactivate edition, comment edit and update actions in Pages controller.

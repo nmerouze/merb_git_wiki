@@ -5,11 +5,11 @@ require 'merb-core'
 require 'merb-core/tasks/merb'
 
 GEM_NAME = "merb_git_wiki"
-AUTHOR = "Your Name"
-EMAIL = "Your Email"
-HOMEPAGE = "http://merbivore.com/"
-SUMMARY = "Merb Slice that provides ..."
-GEM_VERSION = "1.0.3"
+AUTHOR = "Nicolas Merouze"
+EMAIL = "nicolas.merouze@gmail.com"
+HOMEPAGE = "http://github.com/nmerouze/merb_git_wiki"
+SUMMARY = "MerbGitWiki is a git-wiki powered by Merb and in a slice form."
+GEM_VERSION = "0.1.1"
 
 spec = Gem::Specification.new do |s|
   s.rubyforge_project = 'merb'
