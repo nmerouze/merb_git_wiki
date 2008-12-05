@@ -10,3 +10,7 @@ Installation:
 Customisation:
 
 * To deactivate edition, comment edit and update actions in Pages controller.
+
+Others:
+
+Based on "git-wiki":http://github.com/sr/git-wiki
