@@ -9,7 +9,7 @@ AUTHOR = "Nicolas Merouze"
 EMAIL = "nicolas.merouze@gmail.com"
 HOMEPAGE = "http://github.com/nmerouze/merb_git_wiki"
 SUMMARY = "MerbGitWiki is a git-wiki powered by Merb and in a slice form."
-GEM_VERSION = "0.1.1"
+GEM_VERSION = "0.1.2"
 
 spec = Gem::Specification.new do |s|
   s.rubyforge_project = 'merb'

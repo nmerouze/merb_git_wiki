@@ -33,20 +33,6 @@ Merb::Config.use do |c|
   c[:session_store] = 'cookie'
   c[:session_secret_key]  = '98b17286ace00b9628adaf07299eb9ffe7621825'
   c[:reload_templates] = true
-end
- 
-Merb::BootLoader.before_app_loads do
-  require Merb.root / 'lib' / 'core_ext'
-  
-  GitRepository = Merb.root / 'wiki'
-  PageExtension = '.textile'
-  Homepage = 'Home'
-end
- 
-Merb::BootLoader.after_app_loads do
-  begin
-    Page.repo = Grit::Repo.new(GitRepository)
-  rescue Grit::InvalidGitRepositoryError, Grit::NoSuchPathError
-    Merb.logger.error "#{GitRepository}: Not a git repository."
-  end
+  c[:reload_classes] = true
+  c[:reload_time] = 0.5
 end

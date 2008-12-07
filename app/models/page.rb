@@ -37,11 +37,12 @@ class Page
 
     private
       def create_blob_for(page_name)
-        Grit::Blob.create(repo, :name => page_name + PageExtension, :data => '')
+        Grit::Blob.create(repo, :name => "#{page_name}.#{Merb::Slices::config[:merb_git_wiki][:format]}", :data => '')
       end
 
       def find_blob(name, treeish='HEAD')
-        repo.tree(treeish)/(name + PageExtension)
+        repo.tree(treeish) /
+          "#{name}.#{Merb::Slices::config[:merb_git_wiki][:format]}"
       end
   end
 
@@ -99,12 +100,12 @@ class Page
 
   private
     def add_to_index_and_commit!(custom_commit_message='')
-      Dir.chdir(GitRepository) { Page.repo.add(@blob.name) }
+      Dir.chdir(Merb::Slices::config[:merb_git_wiki][:repository]) { Page.repo.add(@blob.name) }
       Page.repo.commit_index(commit_message(custom_commit_message))
     end
 
     def file_name
-      File.join(GitRepository, name + PageExtension)
+      File.join(Merb::Slices::config[:merb_git_wiki][:repository], "#{name}.#{Merb::Slices::config[:merb_git_wiki][:format]}")
     end
 
     def commit_message(message = '')

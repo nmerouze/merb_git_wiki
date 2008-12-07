@@ -1,9 +1,5 @@
 if defined?(Merb::Plugins)
   
-  GitRepository = Merb.root / 'wiki'
-  PageExtension = '.textile'
-  Homepage = 'Home'
-
   $:.unshift File.dirname(__FILE__)
 
   load_dependency 'merb-slices'
@@ -20,13 +16,16 @@ if defined?(Merb::Plugins)
   # :layout - the layout to use; defaults to :merb_git_wiki
   # :mirror - which path component types to use on copy operations; defaults to all
   Merb::Slices::config[:merb_git_wiki][:layout] ||= :merb_git_wiki
+  Merb::Slices::config[:merb_git_wiki][:repository] ||= Merb.root / 'wiki'
+  Merb::Slices::config[:merb_git_wiki][:format] ||= 'textile'
+  Merb::Slices::config[:merb_git_wiki][:homepage] ||= 'Home'
   
   # All Slice code is expected to be namespaced inside a module
   module MerbGitWiki
     
     # Slice metadata
     self.description = "MerbGitWiki is a git-wiki powered by Merb and in a slice form."
-    self.version = "0.1.1"
+    self.version = "0.1.2"
     self.author = "Nicolas Mérouze"
     
     # Stub classes loaded hook - runs before LoadClasses BootLoader
@@ -35,15 +34,16 @@ if defined?(Merb::Plugins)
     end
     
     # Initialization hook - runs before AfterAppLoads BootLoader
-    def self.init      
+    def self.init     
+      repository = Merb::Slices::config[:merb_git_wiki][:repository]
       begin
-        Page.repo = Grit::Repo.new(GitRepository)
+        Page.repo = Grit::Repo.new(repository)
       rescue Grit::InvalidGitRepositoryError, Grit::NoSuchPathError
-        FileUtils.mkdir_p(GitRepository) unless File.directory?(GitRepository)
-        Dir.chdir(GitRepository) { `git init` }
-        Page.repo = Grit::Repo.new(GitRepository)
+        FileUtils.mkdir_p(repository) unless File.directory?(repository)
+        Dir.chdir(repository) { `git init` }
+        Page.repo = Grit::Repo.new(repository)
       rescue
-        Merb.logger.error "#{GitRepository}: Not a git repository."
+        Merb.logger.error "#{repository}: Not a git repository."
       end
     end
     
@@ -66,7 +66,10 @@ if defined?(Merb::Plugins)
     #   to avoid potential conflicts with global named routes.
     def self.setup_router(scope)
       scope.resources :pages, :member => { :history => :get }
-      scope.match('/').to(:controller => 'pages', :action => 'index')
+      scope.match('/pull').to(:controller => 'main', :action => 'pull')
+      scope.match('/').to(:controller => 'pages',
+        :action => 'show',
+        :id => Merb::Slices::config[:merb_git_wiki][:homepage])
     end
     
   end

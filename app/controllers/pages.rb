@@ -1,4 +1,6 @@
 class MerbGitWiki::Pages < MerbGitWiki::Application
+  # before :ensure_authenticated, :only => [:edit, :update]
+  
   def index
     @pages = Page.find_all
     display @pages
