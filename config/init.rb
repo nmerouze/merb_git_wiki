@@ -20,9 +20,6 @@ dependency "dm-timestamps", dm_gems_version
 dependency "dm-types", dm_gems_version        
 dependency "dm-validations", dm_gems_version  
 
-dependency 'mojombo-grit', :require_as => 'grit'
-dependency 'RedCloth'
-
 use_orm :datamapper
 use_test :rspec
 use_template_engine :haml

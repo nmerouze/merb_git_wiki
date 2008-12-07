@@ -3,18 +3,5 @@
   %head
     %title= title
     = css_include_tag stylesheet_path('master')
-    = js_include_tag 'jquery', javascript_path('jquery.hotkeys'), javascript_path('to-title-case')
-    :javascript
-      $(document).ready(function() {
-        $.hotkeys.add('Ctrl+h', function() { document.location = '#{slice_url(:page, Homepage)}' })
-        $.hotkeys.add('Ctrl+l', function() { document.location = '#{slice_url(:pages)}' })
-        /* title-case-ification */
-        document.title = document.title.toTitleCase();
-        $('h1:first').text($('h1:first').text().toTitleCase());
-        $('a').each(function(i) {
-          var e = $(this)
-          e.text(e.text().toTitleCase());
-        })
-      })
   %body
     #content= catch_content :for_layout
