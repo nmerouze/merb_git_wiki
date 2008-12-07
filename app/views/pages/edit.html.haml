@@ -1,12 +1,8 @@
-- title "Editing #{@page.name.titleize}"
-
-%h1= title
-
+%h1= title "Editing #{@page.name.titleize}"
+%hr/
 = form :method => 'put', :action => slice_url(:page, @page) do
-  %p
-    = text_area @page.body, :name => :body
-  %p
-    = text_field :value => URI.decode(params[:message] || ''), :name => :message
+  %p~ text_area body_for(@page), :name => :body, :label => 'Text'
+  %p= text_field :value => decoded_message, :name => :message, :label => 'Message'
   %p
     = submit 'Save as the newest version'
     or

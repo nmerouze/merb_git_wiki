@@ -29,7 +29,14 @@ Merb::Plugins.config[:haml][:attr_wrapper] = '"'
 Merb::Config.use do |c|
   c[:session_store] = 'cookie'
   c[:session_secret_key]  = '98b17286ace00b9628adaf07299eb9ffe7621825'
+  c[:exception_details] = true
   c[:reload_templates] = true
   c[:reload_classes] = true
   c[:reload_time] = 0.5
+  c[:ignore_tampered_cookies] = true
+  c[:log_auto_flush ] = true
+  c[:log_level] = :debug
+
+  c[:log_stream] = STDOUT
+  c[:log_file]   = nil
 end

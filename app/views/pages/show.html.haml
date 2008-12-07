@@ -1,13 +1,5 @@
-- if @page.latest?
-  - title @page.name.titleize
-  = actions_for(@page)
-- else
-  - title "Version #{@page.revision.id_abbrev} of #{@page.name}"
-  Version 
-  = link_to_page_with_revision(@page)
-  = surround ' of ', ' &mdash; ' do
-    = link_to_page(@page)
-  = revert_link_for(@page)
-
-#page_content
-  ~ "#{@page.to_html}"
+%h1= title_for(@page)
+%hr/
+~ @page.to_html
+%hr/
+#actions= actions_for(@page)

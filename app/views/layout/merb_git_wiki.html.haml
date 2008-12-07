@@ -2,6 +2,8 @@
 %html
   %head
     %title= title
-    = css_include_tag stylesheet_path('master')
+    = slice_css_include_tag 'screen', 'master'
+    /[if IE]
+      = slice_css_include_tag 'ie'
   %body
-    #content= catch_content :for_layout
+    #content.container= catch_content :for_layout

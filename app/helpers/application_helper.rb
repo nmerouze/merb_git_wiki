@@ -61,52 +61,50 @@ module Merb
         ::MerbGitWiki.slice_path_for(type, *segments)
       end
       
-      def title(title=nil)
+      def slice_css_include_tag(*stylesheets)
+        css_include_tag(*stylesheets.map { |s| stylesheet_path(s) })
+      end
+      
+      def title(title = nil)
         @title = title.to_s unless title.nil?
         @title
       end
-
-      def list_item(page)
-        link_to page.name.titleize, slice_url(:page, page), :class => 'page_name'
-      end
       
-      def link_to_page(page, with_revision=false)
-        if with_revision
-          attrs = {:class => 'page_revision', :href => slice_url(:page, page, :revision => page.revision.id)}
-          text = page.revision.id_abbrev
-        end
-
-        haml_tag(:a, attrs || { :href => slice_url(:page, page), :class => 'page' }) do
-          haml_concat text || page.name.titleize
-        end
-      end
-      
-      def revert_link_for(page)
-        message = URI.encode "Revert to #{page.revision}"
-        link_to 'Revert', slice_url(:edit_page, page, :body => URI.encode(page.body), :message => message)
-      end
-      
-      def link_to_page_with_revision(page)
-        link_to_page(page, true)
+      def decoded_message
+        URI.decode(params[:message] || '')
       end
       
       def history_item(page)
-        precede(time_lost_in_words(page.revision.date) + ' ago &mdash; ') do
-          link_to_page_with_revision(page)
-          haml_tag(:span, :class => 'commit_message') do
-            haml_concat page.revision.short_message
-          end
+        precede(page.revision.date.formatted(:db) + ' / ') do
+          haml_concat link_to page.revision.short_message, slice_url(:page, page, :revision => page.revision.id)
+        end
+      end
+      
+      def title_for(page)
+        if page.latest?
+          title page.name.titleize
+        else
+          title "#{page.name.titleize} / #{page.revision.id_abbrev}"
         end
       end
       
       def actions_for(page)
-        capture_haml(page) do |p|
-          link_to_page(p)
-          haml_concat ' &mdash; '
-          haml_concat link_to('Edit', slice_url(:edit_page, p))
-          haml_concat '/'
-          haml_concat link_to('History', slice_url(:history_page, p))
+        link_to('All pages', slice_url(:pages)) << ' / ' <<
+        edit_link_for(page) << ' / ' <<
+        link_to('History', slice_url(:history_page, page))
+      end
+      
+      def edit_link_for(page)
+        if page.latest?
+          link_to('Edit', slice_url(:edit_page, page))
+        else
+          message = URI.encode "Revert to #{page.revision}"
+          link_to('Revert', slice_url(:edit_page, page, :body => URI.encode(page.body), :message => message))
         end
+      end
+      
+      def body_for(page)
+        params[:body] || page.body
       end
       
     end
